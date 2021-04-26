@@ -6,6 +6,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: '50px',
   },
+  title: {
+    marginBottom: '0px',
+  },
   box: {
     padding: '30px',
     display: 'flex',
@@ -48,7 +51,7 @@ function MainTable() {
   return (
     <Container className={classes.container}>
       <Paper className={classes.box} elevation={3}>
-        <Typography variant="h2" gutterBottom>
+        <Typography variant="h2" className={classes.title} gutterBottom>
           {total * activeCurrencyRate}
         </Typography>
         <div className={classes.tabes}>
