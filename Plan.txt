@@ -1,0 +1,5 @@
+1. Change WalletCreator, make its currency input valuable. + 
+2. Create wallet delete function +
+3. Make wallet name and value editable
+ - Make custom div or input. Parse value from input and set it into state
+3. Create max wallet number

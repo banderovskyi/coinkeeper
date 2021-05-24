@@ -1,6 +1,7 @@
 import { AppBar, Toolbar } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Loader from '../Loader/Loader';
 
 const styles = {
@@ -8,6 +9,7 @@ const styles = {
 };
 
 function CurrencyTab() {
+  const dispatch = useDispatch();
   const [currencyObj, setCurrencyObj] = useState({ usd: 0, eur: 0 });
   const [currencyIsLoading, setCurrencyIsLoading] = useState(true);
 
@@ -16,13 +18,27 @@ function CurrencyTab() {
       await axios
         .get('http://www.floatrates.com/daily/uah.json')
         .then((res) => {
-          // OPT* Here I can make array with needs currencyes
+          const uahToUsd = res.data.usd.inverseRate.toFixed(2);
+          const uahToEur = res.data.eur.inverseRate.toFixed(2);
+          const usdToUah = res.data.usd.rate.toFixed(6);
+          const eurToUah = res.data.eur.rate.toFixed(6);
           setCurrencyObj({
             ...currencyObj,
-            usd: res.data.usd.inverseRate.toFixed(2),
-            eur: res.data.eur.inverseRate.toFixed(2),
+            uahToUsd,
+            uahToEur,
+            usdToUah,
+            eurToUah,
           });
           setCurrencyIsLoading(false);
+          dispatch({
+            type: 'SET_CURRENIECS',
+            payload: {
+              uahToUsd,
+              uahToEur,
+              usdToUah,
+              eurToUah,
+            },
+          });
         });
     };
     getCurrency();
@@ -32,8 +48,8 @@ function CurrencyTab() {
   return (
     <AppBar position="static">
       <Toolbar style={styles}>
-        USD: {currencyIsLoading ? <Loader /> : currencyObj.usd} | EUR:{' '}
-        {currencyIsLoading ? <Loader /> : currencyObj.eur}
+        USD: {currencyIsLoading ? <Loader /> : currencyObj.uahToUsd} | EUR:{' '}
+        {currencyIsLoading ? <Loader /> : currencyObj.uahToEur}
       </Toolbar>
     </AppBar>
   );
