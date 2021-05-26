@@ -23,14 +23,28 @@ const calcNumbers = {
 
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case 'CHANGE_TOTAL':
+    case 'CALC_TOTAL':
       const newTotal = calcNumbers[payload.action](state.total, payload.total);
       return { ...state, total: newTotal };
+    case 'CHANGE_TOTAL':
+      console.log(payload, 'STATE');
+      let changedTotal = 0;
+      const changedWallets = state.wallets.map((wallet) => {
+        if (wallet.key === payload.wallet) {
+          wallet.amount = Number(payload.changedWalletAmount);
+          return wallet;
+        } else {
+          return wallet;
+        }
+      });
+      changedWallets.forEach((wallet) => (changedTotal = +wallet.amount));
+      return { ...state, total: changedTotal, wallets: changedWallets };
     case 'SET_CURRENIECS':
       return { ...state, currencies: { ...payload } };
     case 'ADD_WALLET':
       const newWallet = {
         ...payload,
+        amount: Number(payload.amount),
         key: `${payload.name}_${payload.currency}`.toUpperCase(),
       };
       return { ...state, wallets: [...state.wallets, newWallet] };

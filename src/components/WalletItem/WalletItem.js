@@ -3,7 +3,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { changeCurrencyToSymbol } from '../../helpers/helpers';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,8 +29,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   amount: {
+    fontSize: '30px',
     padding: '10px',
     border: '1px solid transparent ',
+    maxWidth: '200px',
   },
   walletName: {
     marginLeft: '40px',
@@ -55,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'inherit',
     fontFamily: 'inherit',
     color: 'inherit',
+    outline: 'none',
   },
 }));
 
@@ -64,6 +67,7 @@ function WalletItem(props) {
   const classes = useStyles();
   const [isEditable, setIsEditable] = useState(false);
   const [walletAmount, setWalletAmount] = useState(amount);
+  const [walletName, setWalletName] = useState(name);
 
   const removeWallet = (walletKey, amount) => {
     dispatch({
@@ -71,13 +75,20 @@ function WalletItem(props) {
       payload: walletKey,
     });
     dispatch({
-      type: 'CHANGE_TOTAL',
+      type: 'CALC_TOTAL',
       payload: { action: '-', total: amount },
     });
   };
 
   const editWallet = () => {
     setIsEditable(!isEditable);
+    const saveData = isEditable;
+    if (saveData) {
+      dispatch({
+        type: 'CHANGE_TOTAL',
+        payload: { wallet: walletKey, changedWalletAmount: walletAmount },
+      });
+    }
   };
 
   return (
@@ -87,7 +98,7 @@ function WalletItem(props) {
           className={`${isEditable && classes.divEditable} ${classes.amount} `}
         >
           <input
-            type="text"
+            type="number"
             value={walletAmount}
             onChange={(e) => setWalletAmount(e.target.value)}
             disabled={!isEditable}
@@ -105,8 +116,8 @@ function WalletItem(props) {
       >
         <input
           type="text"
-          value={name}
-          onChange={(e) => setWalletAmount(e.target.value)}
+          value={walletName}
+          onChange={(e) => setWalletName(e.target.value)}
           disabled={!isEditable}
           className={classes.input}
         />

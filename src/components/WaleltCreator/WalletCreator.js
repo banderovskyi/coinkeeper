@@ -66,7 +66,7 @@ function WalletCreator() {
     const totalInUah = totalRate * Number(formData.amount);
 
     dispatch({
-      type: 'CHANGE_TOTAL',
+      type: 'CALC_TOTAL',
       payload: { action: '+', total: totalInUah },
     });
     dispatch({ type: 'ADD_WALLET', payload: formData });
